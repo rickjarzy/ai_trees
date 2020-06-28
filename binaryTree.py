@@ -36,7 +36,7 @@ class TreeNode:
         """
 
         print("- call eval_condition: \n- x: ",x)
-
+        print("- self.var_no: ", self.var_no)
         if self.operator == '=':
             cond = x[:, self.var_no] == self.value
         elif self.operator == '<':
@@ -144,4 +144,6 @@ class Tree:
         for i in range(len(y)):
             y[i] = self.nodes[trace_route[i][-1]]()
         return y
+
+
 
