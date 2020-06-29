@@ -16,7 +16,7 @@ class TreeNode:
 
     def __call__(self):
         # returns the value of the treenode if it is printed in the cmd
-        return self.value
+        return (self.value)
 
     def leaf_node(self):
         """
@@ -24,9 +24,9 @@ class TreeNode:
         :return: True/False
         """
         if self.left_true is not None and self.right_false is not None:
-            return False
+            return (False)
         else:
-            return True
+            return (True)
 
     def eval_condition(self, x):
         """
@@ -36,7 +36,7 @@ class TreeNode:
         """
 
         print("- call eval_condition: \n- x: ",x)
-        print("- self.var_no: ", self.var_no)               # var_no is the number/id of the descission node where the True/False decission is made
+        print("  self.var_no: ", self.var_no)               # var_no is the number/id of the descission node where the True/False decission is made
         if self.operator == '=':
             cond = x[:, self.var_no] == self.value
         elif self.operator == '<':
@@ -50,7 +50,7 @@ class TreeNode:
         """
 
         :param x:       feature vector
-        :param index:
+        :param index:   numpy array with [o, ..., len(x)-1]
         :param trace_route:
         :return:
         """
@@ -59,27 +59,38 @@ class TreeNode:
             index = np.arange(len(x))                       # to trace the feature vector in the batch of feature vectors e.g x[4,:]
         if trace_route is None:
             trace_route = [[] for x in range(len(x))]       # initialize empty
+        print("- trace_route: ", trace_route)
 
         for k in index:
+            print("\n- inside index loop - k: ", k)
+            print("  trace_route: ", trace_route)
+            print("  self.number: ", self.number)
             trace_route[k].append(self.number)
 
         if self.leaf_node():                                # if we are in a leaf node exit recursion
-            return trace_route, index
+            print("  arrived in lead node - trace:  ", trace_route)
+            print("STOP RECUSION")
+            return (trace_route, index)
 
-        cond = self.eval_condition(x[index])                #
+
+        cond = self.eval_condition(x[index])                # check if the element in the feature vector x is True or False at the position of index
+        print("- cond: ", cond)
         true_index = index[cond]                            # contains all stapleindizes of the featurevectors if they where positive
-        print("- true index: ", true_index)
-
+        print("  true index: ", true_index)
         false_index = index[~cond]
-        print("- false index: ", false_index)
+        print("  false index: ", false_index)
 
         # depending of the route will the stack be handed to the one or other branch
 
         if self.left_true is not None and true_index.size != 0:
+            print("  true trace entering")
             trace_route = self.left_true.trace(x, true_index, trace_route)[0]
+            print("  trace true: ", self.left_true.trace(x, true_index, trace_route)[0])
         if self.right_false is not None and false_index.size != 0:
+            print("  false trace entering")
+            print("  trace false: ", self.right_false.trace(x, false_index, trace_route)[0])
             trace_route = self.right_false.trace(x, false_index, trace_route)[0]
-        return trace_route
+        return (trace_route, index)
 
 
 class Tree:
@@ -119,7 +130,7 @@ class Tree:
             to_delete = self.leaf_nodes.index(parent.number)
             del self.leaf_nodes[to_delete]
         # we hand his number so we can work further on this node
-        return node.number
+        return (node.number)
 
     def trace(self, x):
         """
@@ -132,18 +143,19 @@ class Tree:
 
     def eval(self, x):
         """
-        creates the route of nodes that is returned back - it uses trace method.
-        takes allways the last element of the trace route and attaches it to a vector to create the real
-        trace of nodes the freature vector has taken
-        :param x:
-        :return: numpy vector with trace of nodes the feature vector has taken
+        returns the leaf value where the decission tree ends for the feature vector
+        uses trace to get to the leaf node
+        :param x: feature vector - e.g: [True, False, False, False]
+        :return: the value of the leaf node where the decissiontree leads the feature vector
         """
+
         trace_route = self.trace(x)
+        print("# eval trace: ", trace_route)
         y = np.zeros(len(trace_route))
 
         for i in range(len(y)):
             y[i] = self.nodes[trace_route[i][-1]]()
-        return y
+        return (y)
 
 
 
