@@ -19,14 +19,11 @@ if __name__ == "__main__":
     #[sonnig, auto is nicht kaputt, kein schnee, muss nicht um 8 anfangen]
 
     x = np.array([True, False, False, False]).reshape(1,4)
+    #x = np.random.randint(2, size=(10,4))
 
     print(x, " - ", x.shape)
     print("evaluate")
     y = bicycle_tree.eval(x)
     print("y: ", y)
     print("Fahre ich mit dem Rad?:", y)
-
-    print("trace: ", bicycle_tree.trace(x))
-
-
     print("Programm ENDE")
