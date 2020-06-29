@@ -1,5 +1,7 @@
 from binaryTree import Tree, TreeNode
 import numpy as np
+
+
 if __name__ == "__main__":
 
     bicycle_tree = Tree(0, 1, '=')

@@ -11,7 +11,7 @@ class TreeNode:
         self.left_true = None
         self.right_false = None
         self.value = value
-        self.var_no = var_no
+        self.var_no = var_no                # is the number of the descission node where a True or False decission will be made
         self.operator = operator
 
     def __call__(self):
@@ -36,7 +36,7 @@ class TreeNode:
         """
 
         print("- call eval_condition: \n- x: ",x)
-        print("- self.var_no: ", self.var_no)
+        print("- self.var_no: ", self.var_no)               # var_no is the number/id of the descission node where the True/False decission is made
         if self.operator == '=':
             cond = x[:, self.var_no] == self.value
         elif self.operator == '<':
