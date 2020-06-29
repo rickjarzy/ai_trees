@@ -26,5 +26,7 @@ if __name__ == "__main__":
     print("y: ", y)
     print("Fahre ich mit dem Rad?:", y)
 
+    print("trace: ", bicycle_tree.trace(x))
+
 
     print("Programm ENDE")

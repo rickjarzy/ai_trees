@@ -38,10 +38,11 @@ class TreeNode:
         print("- call eval_condition: \n- x: ",x)
         print("  self.var_no: ", self.var_no)
         print("  self.value: ", self.value)# var_no is the number/id of the descission node where the True/False decission is made
+        print("  x[:, self.var_no] : ", x[:, self.var_no])
         if self.operator == '=':
             cond = x[:, self.var_no] == self.value
         elif self.operator == '<':
-            cond = x[:, self.var_no] == self.value
+            cond = x[:, self.var_no] < self.value
         else: # case >
             cond = x[:, self.var_no] > self.value
 
@@ -50,17 +51,19 @@ class TreeNode:
     def trace(self, x, index=None, trace_route=None):
         """
 
-        :param x:       feature vector
-        :param index:   numpy array with [o, ..., len(x)-1]
+        :param x:       feature vector [[True, False, False, False]]
+        :param index:   numpy array with [o, ..., len(x)-1] ---> len(feature vector) can also be --> nunmpy.array([0])
         :param trace_route:
         :return:
         """
-
+        print("- x: ", x)
         if index is None:
             index = np.arange(len(x))                       # to trace the feature vector in the batch of feature vectors e.g x[4,:]
         if trace_route is None:
             trace_route = [[] for x in range(len(x))]       # initialize empty
+
         print("- trace_route: ", trace_route)
+        print("- index: ", index)
 
         for k in index:
             print("\n- inside index loop - k: ", k)
@@ -73,7 +76,7 @@ class TreeNode:
             print("STOP RECUSION")
             return (trace_route, index)
 
-
+        # check which branch we take in the next step - True branch or False branch
         cond = self.eval_condition(x[index])                # check if the element in the feature vector x is True or False at the position of index
         print("- cond: ", cond)
         true_index = index[cond]                            # contains all stapleindizes of the featurevectors if they where positive
@@ -86,10 +89,8 @@ class TreeNode:
         if self.left_true is not None and true_index.size != 0:
             print("  true trace entering")
             trace_route = self.left_true.trace(x, true_index, trace_route)[0]
-            print("  trace true: ", self.left_true.trace(x, true_index, trace_route)[0])
         if self.right_false is not None and false_index.size != 0:
             print("  false trace entering")
-            print("  trace false: ", self.right_false.trace(x, false_index, trace_route)[0])
             trace_route = self.right_false.trace(x, false_index, trace_route)[0]
         return (trace_route, index)
 
